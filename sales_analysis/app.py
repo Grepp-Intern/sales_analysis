@@ -132,4 +132,4 @@ def ex_html():
 if __name__ == '__main__':
 	# init_db()
 	# app.run(debug=False)
-	app.run(host='0.0.0.0', debug=False, port=1024)
+	app.run(host='0.0.0.0', debug=True, port=1024)
