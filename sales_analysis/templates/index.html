@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<link rel="stylesheet" href={{ url_for('static', filename='css/table_style.css') }}>
+	<head>
+		<title>Index</title>
+	</head>
+	<body>
+
+		<div class="box">
+			<div class="box-header">
+				<h3 class="box-title">  매출</h3>
+			</div>
+			<div class="box-body"; style="float:left">
+				<table id="date-table" class="table table-bordered">
+					<thead>
+						<tr>
+							<th>날짜</th>
+							<th>누적판매액</th>
+							<th>당일매출</th>
+							<th>회사매출</th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						{% for INDEX in INDEX_TABLE %}
+						<tr> 
+							<td> <a href="daily/{{ INDEX.DATE }}"> {{ INDEX.DATE }} </a></td>
+							<td> ₩ {{ INDEX.TOTAL_REVENUE }} </td>
+							<td> ₩ {{ INDEX.DAILY_REVENUE }} </td>
+							<td> ₩ {{ INDEX.COMPANY_REVENUE }} </td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+
+			<div class="box-body"; style="float:left">
+				<table id="date-table" class="table table-bordered">
+					<thead>
+						<tr>
+							<th>월간 매출 예상</th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tr>
+							<td> ₩ {{ MONTHLY_REVENUE_PREDICT }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+
+	</body>
+</html>
