@@ -61,7 +61,7 @@ def daily_index(date):
 
 @app.route('/')
 def hello():
-	return "Please enter the indexing page"
+	return "enter the indexing page"
 
 @app.route('/course/<course_id>')
 def course_index(course_id):
