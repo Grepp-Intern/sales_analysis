@@ -59,6 +59,10 @@ def daily_index(date):
 
 	return render_template('daily.html', DATE=date, COURSES=courses)
 
+@app.route('/')
+def hello():
+	return "hello world"
+
 @app.route('/course/<course_id>')
 def course_index(course_id):
 	sql = "SELECT TITLE FROM COURSES WHERE ID = (?)"
