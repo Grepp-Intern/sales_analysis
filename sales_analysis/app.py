@@ -61,7 +61,7 @@ def daily_index(date):
 
 @app.route('/')
 def hello():
-	return "hello world"
+	return "main page"
 
 @app.route('/course/<course_id>')
 def course_index(course_id):
@@ -132,4 +132,4 @@ def ex_html():
 if __name__ == '__main__':
 	# init_db()
 	# app.run(debug=False)
-	app.run(host='0.0.0.0', debug=False, port=1024)
+	app.run(host='0.0.0.0', debug=True, port=1024)
