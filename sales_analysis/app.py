@@ -47,7 +47,7 @@ def index():
 		revenue_predict = revenue_predict + int(index['COMPANY_REVENUE'].replace(',',''))
 	revenue_predict = int( (revenue_predict/len(index_table) * 9 * 365) / (10 * 12) )
 
-	# monthly_revenue_predict = format(revenue_predict, ',')
+	monthly_revenue_predict = format(revenue_predict, ',')
 
 	return render_template('index.html', INDEX_TABLE=index_table, MONTHLY_REVENUE_PREDICT=monthly_revenue_predict)
 
