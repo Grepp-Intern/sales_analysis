@@ -88,7 +88,7 @@ def get_last_page_number(driver):
 #Chrome('./chromedriver')
 #PhantomJS()
 def get_all_urls_use_selenium():
-	driver = webdriver.PhantomJS()
+	driver = webdriver.PhantomJS('/usr/bin/phantomjs')
 	driver.get('https://www.inflearn.com/all-courses/')
 	next_page_number_xpath = "//div[@id='course-dir-list']/div[@id='pag-top']/div[@class='pagination-links']/a[@class='next page-numbers']"
 	current_xpath_element = ''
