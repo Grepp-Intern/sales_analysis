@@ -81,14 +81,14 @@ def course_index(course_id):
 
 @app.route('/update')
 def update():
-	crawling.write_file(crawling.get_all_urls_use_selenium())
+	# crawling.write_file(crawling.get_all_urls_use_selenium())
 	file = open('./urls.txt')
 	URL_list = file.readlines()
 	file.close()
 
 	for i in range(len(URL_list)):
 		URL = URL_list[i]
-		print(URL)
+		# print(URL)
 
 		course = list()
 		course.append(URL)
@@ -112,7 +112,7 @@ def update():
 
 		time.sleep(1)
 	
-	return redirect(url_for('show_courses'))
+	return redirect(url_for('index'))
 
 @app.route('/delete')
 def delete():
