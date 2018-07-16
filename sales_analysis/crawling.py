@@ -127,4 +127,5 @@ def get_all_urls_use_selenium():
 		current_xpath_element.click()
 
 	driver.quit()
+	print "url update finish"
 	return all_urls
