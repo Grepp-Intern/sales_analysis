@@ -97,8 +97,11 @@ def get_all_urls_use_selenium():
 	currnet_page_number = get_current_page_number(driver)
 	last_page_number = get_last_page_number(driver)
 	all_urls = []
+	page = 1
 
 	while True:
+		print page
+		page += 1
 		try:
 			current_xpath_element = WebDriverWait(driver, 10) \
 			.until(EC.presence_of_element_located((By.XPATH, next_page_number_xpath)))
