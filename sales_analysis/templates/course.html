@@ -1,52 +1,90 @@
-<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript">
+    google.load('visualization', '1.1', {packages: ['line']});
+    google.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+
+      data.addColumn('string', '날짜');
+      data.addColumn('number', '수강생');
+
+      '{% for STUDENT in STUDENT_COUNT %}'
+      var studentDate = '{{ STUDENT.UPDATE_DATE }}';
+      var studentCount = '{{ STUDENT.STUDENT_COUNT }}';
+
+      data.addRows([[studentDate, parseInt(studentCount)]]);
+      '{% endfor %}'
+
+      var option = {
+        width: 800,
+        height: 400,
+        colors: ['black']
+      };
+
+      var chart = new google.charts.Line(document.getElementById('chart'));
+      chart.draw(data, option);
+    }
+
+  </script>
+</head>
+
+<body><div id="chart"></div></body>
 <html>
 <link rel="stylesheet" href={{ url_for('static', filename='css/table_style.css') }}>
-	<head>
-		<title>Course</title>
-	</head>
-	<body>
-		<div class="box">
-			<div class="box-header">
-				<h3 class="box-title">  {{ TITLE }}</h3>
-			</div>
-			<div class="box-body">
-				<table id="date-table" class="table table-bordered">
-					<thead>
-						<tr>
-							<th>날짜</th>
-							<th>수강생</th>
-						</tr>
-					</thead>
+  <head>
+    <title>Course</title>
+  </head>
+  <body>
+    <div class="box">
+      <div class="box-header">
+        <h3 class="box-title">  {{ TITLE }}</h3>
+      </div>
+      <div class="box-body", style="float:left">
+        <table id="date-table" class="table table-bordered">
+          <thead>
+            <tr>
+              <th>날짜</th>
+              <th>수강생</th>
+            </tr>
+          </thead>
 
-					<tbody>
-						{% for STUDENT in STUDENT_COUNT %}
-						<tr> 
-							<td> {{ STUDENT.UPDATE_DATE }} </td>
-							<td> {{ STUDENT.STUDENT_COUNT }}
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-				가격변동
-				<table>
-					<thead>
-						<tr>
-							<th>날짜</th>
-							<th>가격</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for PRICE in PRICES %}
-						<tr> 
-							<td> {{ PRICE.UPDATE_DATE }} </td>
-							<td> {{ PRICE.PRICE }}
-						</tr>
-						{% endfor %}			
-					</tbody>
-				</table>
-			</div>
-		</div>
+          <tbody>
+            {% for STUDENT in STUDENT_COUNT %}
+            <tr> 
+              <td> {{ STUDENT.UPDATE_DATE }} </td>
+              <td> {{ STUDENT.STUDENT_COUNT }} </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="box-body">
+        가격변동
+        <table id="price-change">
+        <table>
+          <thead>
+            <tr>
+              <th>날짜</th>
+              <th>가격</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for PRICE in PRICES %}
+            <tr> 
+              <td> {{ PRICE.UPDATE_DATE }} </td>
+              <td> {{ PRICE.PRICE }} </td>
+            </tr>
+            {% endfor %}      
+          </tbody>
+        </table>
+      </table>
+      </div>
+    </div>
 
 
-	</body>
+  </body>
+</html>
 </html>
