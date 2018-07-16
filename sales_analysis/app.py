@@ -81,7 +81,7 @@ def course_index(course_id):
 
 @app.route('/update')
 def update():
-	# crawling.write_file(crawling.get_all_urls_use_selenium())
+	crawling.write_file(crawling.get_all_urls_use_selenium())
 	file = open('./urls.txt')
 	URL_list = file.readlines()
 	file.close()
