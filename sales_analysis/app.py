@@ -100,17 +100,23 @@ def update():
 
 		sql = "INSERT OR IGNORE INTO COURSES (URL, TITLE, RELEASE_DATE) VALUES(?, ?, ?)"
 		data = (course[0], course[1], course[4])
-		g.db.execute(sql, data)
-		g.db.commit()
+		with app.app_context():
+			g.db = connect_db()
+			g.db.execute(sql, data)
+			g.db.commit()
 
 		sql = "SELECT ID FROM COURSES WHERE URL = (?)"
-		cur = g.db.execute(sql, [URL])
+		with app.app_context():
+			g.db = connect_db()	
+			cur = g.db.execute(sql, [URL])
 		course_id = cur.fetchall()
 
 		sql = "INSERT OR IGNORE INTO SALES (ID, UPDATE_DATE, PRICE, STUDENT_COUNT) VALUES(?, ?, ?, ?)"
 		data = (int(course_id[0][0]), course[4], course[3], course[2])
-		g.db.execute(sql, data)
-		g.db.commit()
+		with app.app_context():
+			g.db = connect_db()
+			g.db.execute(sql, data)
+			g.db.commit()
 
 		time.sleep(1)
 	
