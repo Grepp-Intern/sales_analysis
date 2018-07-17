@@ -55,7 +55,7 @@ def index():
 def daily_index(date):
 	sql = "SELECT COURSES.ID, COURSES.TITLE, A.PRICE, A.STUDENT_COUNT, SUM((A.STUDENT_COUNT - B.STUDENT_COUNT) * A.PRICE) AS REVENUE, A.UPDATE_DATE FROM COURSES, SALES A, SALES B WHERE COURSES.ID = A.ID AND A.ID = B.ID AND A.UPDATE_DATE = DATE(B.UPDATE_DATE, '+1 day') AND A.UPDATE_DATE = (?) GROUP BY A.ID, A.UPDATE_DATE ORDER BY REVENUE DESC"
 	cur = g.db.execute(sql, [date])
-	courses = [dict(ID=row[0], TITLE=row[1], PRICE=row[2], STUDENT_COUNT=row[3], REVENUE=row[4], UPDATE_DATE=row[5]) for row in cur.fetchall()]
+	courses = [dict(ID=row[0], TITLE=row[1], PRICE=format(int(row[2]), ','), STUDENT_COUNT=format(int(row[3]), ','), REVENUE=format(int(row[4]), ','), UPDATE_DATE=row[5]) for row in cur.fetchall()]
 
 	return render_template('daily.html', DATE=date, COURSES=courses)
 
@@ -71,11 +71,11 @@ def course_index(course_id):
 
 	sql = "SELECT STUDENT_COUNT, UPDATE_DATE FROM SALES WHERE ID = (?)"
 	cur = g.db.execute(sql, [course_id])
-	student_count = [dict(STUDENT_COUNT=row[0], UPDATE_DATE=row[1]) for row in cur.fetchall()]
+	student_count = [dict(STUDENT_COUNT=format(int(row[0]), ','), UPDATE_DATE=row[1]) for row in cur.fetchall()]
 
 	sql = "SELECT A.UPDATE_DATE, A.PRICE FROM SALES A, SALES B WHERE A.ID = (?) AND A.ID = B.ID AND A.PRICE <> B.PRICE"
 	cur = g.db.execute(sql, [course_id])
-	prices = [dict(UPDATE_DATE=row[0], PRICE=row[1]) for row in cur.fetchall()]
+	prices = [dict(UPDATE_DATE=row[0], PRICE=format(int(row[1]), ',')) for row in cur.fetchall()]
 
 	return render_template('course.html', ID=course_id, TITLE=title, STUDENT_COUNT=student_count, PRICE=prices)
 
@@ -88,7 +88,6 @@ def update():
 
 	for i in range(len(URL_list)):
 		URL = URL_list[i]
-		# print(URL)
 
 		course = list()
 		course.append(URL)
