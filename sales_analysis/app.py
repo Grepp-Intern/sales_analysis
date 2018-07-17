@@ -69,7 +69,7 @@ def course_index(course_id):
 	cur = g.db.execute(sql, [course_id])
 	title = cur.fetchall()[0][0]
 
-	sql = "SELECT STUDENT_COUNT, UPDATE_DATE FROM SALES WHERE ID = (?)"
+	sql = "SELECT STUDENT_COUNT, UPDATE_DATE FROM SALES WHERE ID = (?) LIMIT 7"
 	cur = g.db.execute(sql, [course_id])
 	student_count = [dict(STUDENT_COUNT=format(int(row[0]), ','), UPDATE_DATE=row[1]) for row in cur.fetchall()]
 
