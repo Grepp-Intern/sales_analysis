@@ -132,3 +132,6 @@ def get_all_urls_use_selenium():
 	driver.quit()
 	print "url update finish"
 	return all_urls
+
+write_file(get_all_urls_use_selenium())
+
