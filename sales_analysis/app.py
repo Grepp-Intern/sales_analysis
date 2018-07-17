@@ -9,6 +9,8 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import time
 import crawling
+import logging
+from apscheduler.schedulers.blocking import BlockingScheduler
 
 DATABASE = './crawling.db'
 DEBUG = True
@@ -131,4 +133,8 @@ def ex_html():
 if __name__ == '__main__':
 	# init_db()
 	# app.run(debug=False)
+	sched = BlockingScheduler()
+	# sched.add_job(update, 'cron', hour='3', minute='15')
+	sched.add_job(update, 'cron', minute='*/10')
+	sched.start()
 	app.run(host='0.0.0.0', debug=True, port=1024)
