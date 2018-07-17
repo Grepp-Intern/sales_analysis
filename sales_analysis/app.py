@@ -7,6 +7,7 @@ import sqlite3
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
+from pytz import timezone
 import time
 import crawling
 import logging
@@ -179,8 +180,8 @@ if __name__ == '__main__':
 	h.setFormatter(fmt)
 	log.addHandler(h)
 
-	sched = BackgroundScheduler()
-	sched.add_job(update, 'cron', hour='0-23', minute='08')
+	sched = BackgroundScheduler(timezone='utc')
+	sched.add_job(update, 'cron', hour='0-23', minute='30')
 	sched.start()
 	# sched.add_job(update, 'cron', hour='3', minute='15')
 	app.run(host='0.0.0.0', debug=True, port=1024)
