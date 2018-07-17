@@ -82,55 +82,7 @@ def course_index(course_id):
 
 	return render_template('course.html', ID=course_id, TITLE=title, STUDENT_COUNT=student_count, PRICE=prices)
 
-# @app.route('/update')
-# def update():
-# 	crawling.write_file(crawling.get_all_urls_use_selenium())
-# 	file = open('./urls.txt')
-# 	URL_list = file.readlines()
-# 	file.close()
-
-# 	for i in range(len(URL_list)):
-# 		URL = URL_list[i]
-
-# 		course = list()
-# 		course.append(URL)
-# 		html = crawling.get_html(URL)
-# 		course = course + crawling.parse_html(html)
-# 		course.append(datetime.now().strftime('%Y-%m-%d'))
-
-# 		sql = "INSERT OR IGNORE INTO COURSES (URL, TITLE, RELEASE_DATE) VALUES(?, ?, ?)"
-# 		data = (course[0], course[1], course[4])
-# 		g.db.execute(sql, data)
-# 		g.db.commit()
-
-# 		sql = "SELECT ID FROM COURSES WHERE URL = (?)"
-# 		cur = g.db.execute(sql, [URL])
-# 		course_id = cur.fetchall()
-
-# 		sql = "INSERT OR IGNORE INTO SALES (ID, UPDATE_DATE, PRICE, STUDENT_COUNT) VALUES(?, ?, ?, ?)"
-# 		data = (int(course_id[0][0]), course[4], course[3], course[2])
-# 		g.db.execute(sql, data)
-# 		g.db.commit()
-
-# 		time.sleep(1)
-	
-# 	return redirect(url_for('index'))
-
-@app.route('/delete')
-def delete():
-	sql = "DELETE FROM COURSES"
-	g.db.execute(sql)
-	g.db.commit()
-
-	sql = "DELETE FROM SALES"
-	g.db.execute(sql)
-	g.db.commit()
-	return redirect(url_for('show_courses'))
-
-@app.route('/ex_html')
-def ex_html():
-	return render_template('ex_html.html');
-
+@app.route('/update')
 def update():
 	crawling.write_file(crawling.get_all_urls_use_selenium())
 	file = open('./urls.txt')
@@ -148,30 +100,38 @@ def update():
 
 		sql = "INSERT OR IGNORE INTO COURSES (URL, TITLE, RELEASE_DATE) VALUES(?, ?, ?)"
 		data = (course[0], course[1], course[4])
-		with app.app_context():
-			g.db = connect_db()
-			g.db.execute(sql, data)
-			g.db.commit()
+		g.db.execute(sql, data)
+		g.db.commit()
 
 		sql = "SELECT ID FROM COURSES WHERE URL = (?)"
-		with app.app_context():
-			g.db = connect_db()
-			cur = g.db.execute(sql, [URL])
+		cur = g.db.execute(sql, [URL])
 		course_id = cur.fetchall()
 
 		sql = "INSERT OR IGNORE INTO SALES (ID, UPDATE_DATE, PRICE, STUDENT_COUNT) VALUES(?, ?, ?, ?)"
 		data = (int(course_id[0][0]), course[4], course[3], course[2])
-		with app.app_context():
-			g.db = connect_db()
-			g.db.execute(sql, data)
-			g.db.commit()
+		g.db.execute(sql, data)
+		g.db.commit()
 
 		time.sleep(1)
+	
+	return redirect(url_for('index'))
 
+@app.route('/delete')
+def delete():
+	sql = "DELETE FROM COURSES"
+	g.db.execute(sql)
+	g.db.commit()
+
+	sql = "DELETE FROM SALES"
+	g.db.execute(sql)
+	g.db.commit()
+	return redirect(url_for('show_courses'))
+
+@app.route('/ex_html')
+def ex_html():
+	return render_template('ex_html.html');
 
 if __name__ == '__main__':
-	# init_db()
-	# app.run(debug=False)
 	log = logging.getLogger('apscheduler.executors.default')
 	log.setLevel(logging.INFO)  # DEBUG
 
@@ -183,5 +143,5 @@ if __name__ == '__main__':
 	sched = BackgroundScheduler(timezone='utc')
 	sched.add_job(update, 'cron', hour='0-23', minute='30')
 	sched.start()
-	# sched.add_job(update, 'cron', hour='3', minute='15')
+	
 	app.run(host='0.0.0.0', debug=True, port=1024)
