@@ -72,8 +72,8 @@ def course_index(course_id):
 	cur = g.db.execute(sql, [course_id])
 	title = cur.fetchall()[0][0]
 
-	sql = "SELECT STUDENT_COUNT, UPDATE_DATE FROM SALES WHERE ID = (?) LIMIT 7 ORDER BY UPDATE_DATE DESC"
-	cur = g.db.execute(sql, [course_id])
+	sql = "SELECT STUDENT_COUNT, UPDATE_DATE FROM SALES WHERE ID = (?) AND UPDATE_DATE > DATE(?, '-7 day');"
+	cur = g.db.execute(sql, [course_id, datetime.now().strftime('%Y-%m-%d')])
 	student_count = [dict(STUDENT_COUNT=format(int(row[0]), ','), UPDATE_DATE=row[1]) for row in cur.fetchall()]
 
 	sql = "SELECT A.UPDATE_DATE, A.PRICE FROM SALES A, SALES B WHERE A.ID = (?) AND A.ID = B.ID AND A.PRICE <> B.PRICE"
