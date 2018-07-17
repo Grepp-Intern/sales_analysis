@@ -100,7 +100,7 @@ def get_all_urls_use_selenium():
 	page = 1
 
 	while True:
-		print page
+		# print page
 		page += 1
 		try:
 			current_xpath_element = WebDriverWait(driver, 10) \
@@ -130,6 +130,6 @@ def get_all_urls_use_selenium():
 		current_xpath_element.click()
 
 	driver.quit()
-	print "url update finish"
+	# print "url update finish"
 	return all_urls
 

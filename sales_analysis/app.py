@@ -147,7 +147,7 @@ if __name__ == '__main__':
 	log.addHandler(h)
 
 	sched = BackgroundScheduler(timezone='utc')
-	sched.add_job(update, 'cron', hour='0-23', minute='30')
+	sched.add_job(update, 'cron', hour='0', minute='5')
 	sched.start()
 	
 	app.run(host='0.0.0.0', debug=True, port=1024)
