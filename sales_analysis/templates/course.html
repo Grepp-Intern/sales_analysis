@@ -14,6 +14,8 @@
       '{% for STUDENT in STUDENT_COUNT %}'
       var studentDate = '{{ STUDENT.UPDATE_DATE }}';
       var studentCount = '{{ STUDENT.STUDENT_COUNT }}';
+      var studentCount = studentCount.replace(/[^0-9]/g,'');
+
 
       data.addRows([[studentDate, parseInt(studentCount)]]);
       '{% endfor %}'
@@ -55,7 +57,7 @@
             {% for STUDENT in STUDENT_COUNT %}
             <tr> 
               <td> {{ STUDENT.UPDATE_DATE }} </td>
-              <td> {{ STUDENT.STUDENT_COUNT }} </td>
+              <td> {{ STUDENT.STUDENT_COUNT }} 명</td>
             </tr>
             {% endfor %}
           </tbody>
