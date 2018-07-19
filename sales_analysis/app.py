@@ -9,11 +9,11 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from pytz import timezone
 import time
-import crawling
+import inflearn_crawling
 import logging
 from apscheduler.schedulers.background import BackgroundScheduler
 
-DATABASE = './crawling.db'
+DATABASE = './inflearn.db'
 DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
@@ -84,8 +84,8 @@ def course_index(course_id):
 
 @app.route('/update')
 def update():
-	crawling.write_file(crawling.get_all_urls_use_selenium())
-	file = open('./urls.txt')
+	inflearn_crawling.write_file(inflearn_crawling.get_all_urls_use_selenium())
+	file = open('./inflearn_urls.txt')
 	URL_list = file.readlines()
 	file.close()
 
@@ -94,8 +94,8 @@ def update():
 
 		course = list()
 		course.append(URL)
-		html = crawling.get_html(URL)
-		course = course + crawling.parse_html(html)
+		html = inflearn_crawling.get_html(URL)
+		course = course + inflearn_crawling.parse_html(html)
 		course.append(datetime.now().strftime('%Y-%m-%d'))
 
 		sql = "INSERT OR IGNORE INTO COURSES (URL, TITLE, RELEASE_DATE) VALUES(?, ?, ?)"
