@@ -13,7 +13,7 @@ import inflearn_crawling
 import logging
 from apscheduler.schedulers.background import BackgroundScheduler
 
-DATABASE = './inflearn.db'
+DATABASE = './revenue.db'
 DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
@@ -41,9 +41,9 @@ def teardown_request(exception):
 
 @app.route('/index')
 def index():
-	sql = "SELECT A.UPDATE_DATE, SUM(A.STUDENT_COUNT * A.PRICE) AS TOTAL_REVENUE, SUM((A.STUDENT_COUNT - B.STUDENT_COUNT) * A.PRICE) AS DAILY_REVENUE, SUM((A.STUDENT_COUNT - B.STUDENT_COUNT) * A.PRICE) * 0.3 AS COMPANY_REVENUE FROM SALES A, SALES B WHERE A.ID = B.ID AND A.UPDATE_DATE = DATE(B.UPDATE_DATE, '+1 day') GROUP BY A.UPDATE_DATE ORDER BY A.UPDATE_DATE"
+	sql = "SELECT A.UPDATE_DATE, SUM((A.STUDENT_COUNT - B.STUDENT_COUNT) * A.PRICE) AS DAILY_REVENUE, SUM((A.STUDENT_COUNT - B.STUDENT_COUNT) * A.PRICE) * 0.3 AS COMPANY_REVENUE FROM SALES A, SALES B WHERE A.ID = B.ID AND A.UPDATE_DATE = DATE(B.UPDATE_DATE, '+1 day') GROUP BY A.UPDATE_DATE ORDER BY A.UPDATE_DATE"
 	cur = g.db.execute(sql)
-	index_table = [dict(DATE=row[0], TOTAL_REVENUE=format(int(row[1]), ','), DAILY_REVENUE=format(int(row[2]), ','), COMPANY_REVENUE=format(int(row[3]), ',')) for row in cur.fetchall()]
+	index_table = [dict(DATE=row[0], DAILY_REVENUE=format(int(row[1]), ','), COMPANY_REVENUE=format(int(row[2]), ',')) for row in cur.fetchall()]
 
 	revenue_predict = 0
 	for index in index_table:
@@ -56,9 +56,9 @@ def index():
 
 @app.route('/daily/<date>')
 def daily_index(date):
-	sql = "SELECT COURSES.ID, COURSES.TITLE, A.PRICE, A.STUDENT_COUNT, SUM((A.STUDENT_COUNT - B.STUDENT_COUNT) * A.PRICE) AS REVENUE, A.UPDATE_DATE FROM COURSES, SALES A, SALES B WHERE COURSES.ID = A.ID AND A.ID = B.ID AND A.UPDATE_DATE = DATE(B.UPDATE_DATE, '+1 day') AND A.UPDATE_DATE = (?) GROUP BY A.ID, A.UPDATE_DATE ORDER BY REVENUE DESC"
+	sql = "SELECT COURSES.ID, COURSES.URL, COURSES.TITLE, A.PRICE, A.STUDENT_COUNT, SUM((A.STUDENT_COUNT - B.STUDENT_COUNT) * A.PRICE) AS REVENUE, A.UPDATE_DATE FROM COURSES, SALES A, SALES B WHERE COURSES.ID = A.ID AND A.ID = B.ID AND A.UPDATE_DATE = DATE(B.UPDATE_DATE, '+1 day') AND A.UPDATE_DATE = (?) GROUP BY A.ID, A.UPDATE_DATE ORDER BY REVENUE DESC"
 	cur = g.db.execute(sql, [date])
-	courses = [dict(ID=row[0], TITLE=row[1], PRICE=format(int(row[2]), ','), STUDENT_COUNT=format(int(row[3]), ','), REVENUE=format(int(row[4]), ','), UPDATE_DATE=row[5]) for row in cur.fetchall()]
+	courses = [dict(ID=row[0], URL=row[1], TITLE=row[2], PRICE=format(int(row[3]), ','), STUDENT_COUNT=format(int(row[4]), ','), REVENUE=format(int(row[5]), ','), UPDATE_DATE=row[6]) for row in cur.fetchall()]
 
 	return render_template('daily.html', DATE=date, COURSES=courses)
 

@@ -18,7 +18,6 @@
 					<thead>
 						<tr>
 							<th>날짜</th>
-							<th>누적판매액</th>
 							<th>당일매출</th>
 							<th>회사매출</th>
 						</tr>
@@ -28,7 +27,6 @@
 						{% for INDEX in INDEX_TABLE %}
 						<tr> 
 							<td> <a href="daily/{{ INDEX.DATE }}"> {{ INDEX.DATE }} </a></td>
-							<td> ₩ {{ INDEX.TOTAL_REVENUE }} </td>
 							<td> ₩ {{ INDEX.DAILY_REVENUE }} </td>
 							<td> ₩ {{ INDEX.COMPANY_REVENUE }} </td>
 						</tr>

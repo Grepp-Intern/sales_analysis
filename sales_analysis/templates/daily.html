@@ -26,7 +26,7 @@
 						{% for COURSE in COURSES %}
 						<tr> 
 							<td> <a href="../course/{{ COURSE.ID }}"> {{ COURSE.ID }} </a></td>
-							<td> {{ COURSE.TITLE }} </td>
+							<td> <a href={{ COURSE.URL }} target="_blank"> {{ COURSE.TITLE }} </a></td>
 							<td> ₩ {{ COURSE.PRICE }} </td>
 							<td> {{ COURSE.STUDENT_COUNT }} 명</td>
 							<td> ₩ {{ COURSE.REVENUE }} </td>
