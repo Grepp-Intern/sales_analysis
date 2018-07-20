@@ -41,7 +41,11 @@ def teardown_request(exception):
 
 @app.route('/index')
 def index():
-	sql = "SELECT A.UPDATE_DATE, SUM((A.STUDENT_COUNT - B.STUDENT_COUNT) * A.PRICE) AS DAILY_REVENUE, SUM((A.STUDENT_COUNT - B.STUDENT_COUNT) * A.PRICE) * 0.3 AS COMPANY_REVENUE FROM SALES A, SALES B WHERE A.ID = B.ID AND A.UPDATE_DATE = DATE(B.UPDATE_DATE, '+1 day') GROUP BY A.UPDATE_DATE ORDER BY A.UPDATE_DATE"
+	sql = "SELECT A.UPDATE_DATE, SUM((A.STUDENT_COUNT - B.STUDENT_COUNT) * A.PRICE) AS DAILY_REVENUE, SUM((A.STUDENT_COUNT - B.STUDENT_COUNT) * A.PRICE) * 0.3 AS COMPANY_REVENUE \
+		   FROM SALES A, SALES B \
+		   WHERE A.ID = B.ID AND A.UPDATE_DATE = DATE(B.UPDATE_DATE, '+1 day') \
+		   GROUP BY A.UPDATE_DATE \
+		   ORDER BY A.UPDATE_DATE"
 	cur = g.db.execute(sql)
 	index_table = [dict(DATE=row[0], DAILY_REVENUE=format(int(row[1]), ','), COMPANY_REVENUE=format(int(row[2]), ',')) for row in cur.fetchall()]
 
@@ -56,7 +60,11 @@ def index():
 
 @app.route('/daily/<date>')
 def daily_index(date):
-	sql = "SELECT COURSES.ID, COURSES.URL, COURSES.TITLE, A.PRICE, A.STUDENT_COUNT, SUM((A.STUDENT_COUNT - B.STUDENT_COUNT) * A.PRICE) AS REVENUE, A.UPDATE_DATE FROM COURSES, SALES A, SALES B WHERE COURSES.ID = A.ID AND A.ID = B.ID AND A.UPDATE_DATE = DATE(B.UPDATE_DATE, '+1 day') AND A.UPDATE_DATE = (?) GROUP BY A.ID, A.UPDATE_DATE ORDER BY REVENUE DESC"
+	sql = "SELECT COURSES.ID, COURSES.URL, COURSES.TITLE, A.PRICE, A.STUDENT_COUNT, SUM((A.STUDENT_COUNT - B.STUDENT_COUNT) * A.PRICE) AS REVENUE, A.UPDATE_DATE \
+		   FROM COURSES, SALES A, SALES B \
+		   WHERE COURSES.ID = A.ID AND A.ID = B.ID AND A.UPDATE_DATE = DATE(B.UPDATE_DATE, '+1 day') AND A.UPDATE_DATE = (?) \
+		   GROUP BY A.ID, A.UPDATE_DATE \
+		   ORDER BY REVENUE DESC"
 	cur = g.db.execute(sql, [date])
 	courses = [dict(ID=row[0], URL=row[1], TITLE=row[2], PRICE=format(int(row[3]), ','), STUDENT_COUNT=format(int(row[4]), ','), REVENUE=format(int(row[5]), ','), UPDATE_DATE=row[6]) for row in cur.fetchall()]
 
@@ -72,6 +80,13 @@ def course_index(course_id):
 	cur = g.db.execute(sql, [course_id])
 	title = cur.fetchall()[0][0]
 
+	sql = "SELECT (A.STUDENT_COUNT - B.STUDENT_COUNT) AS STUDENT_CHANGE, A.UPDATE_DATE \
+		   FROM SALES A, SALES B \
+		   WHERE A.ID = ? AND A.ID = B.ID AND A.UPDATE_DATE = DATE(B.UPDATE_DATE, '+1 day') AND A.UPDATE_DATE > DATE(?, '-7 day') \
+		   GROUP BY A.UPDATE_DATE, A.ID"
+	cur = g.db.execute(sql, [course_id, datetime.now().strftime('%Y-%m-%d')])
+	student_change = [dict(STUDENT_CHANGE=int(row[0]), UPDATE_DATE=row[1]) for row in cur.fetchall()]	  
+
 	sql = "SELECT STUDENT_COUNT, UPDATE_DATE FROM SALES WHERE ID = (?) AND UPDATE_DATE > DATE(?, '-7 day');"
 	cur = g.db.execute(sql, [course_id, datetime.now().strftime('%Y-%m-%d')])
 	student_count = [dict(STUDENT_COUNT=format(int(row[0]), ','), UPDATE_DATE=row[1]) for row in cur.fetchall()]
@@ -80,7 +95,7 @@ def course_index(course_id):
 	cur = g.db.execute(sql, [course_id])
 	prices = [dict(UPDATE_DATE=row[0], PRICE=format(int(row[1]), ',')) for row in cur.fetchall()]
 
-	return render_template('course.html', ID=course_id, TITLE=title, STUDENT_COUNT=student_count, PRICE=prices)
+	return render_template('course.html', ID=course_id, STUDENT_CHANGE=student_change, TITLE=title, STUDENT_COUNT=student_count, PRICE=prices)
 
 @app.route('/update')
 def update():
